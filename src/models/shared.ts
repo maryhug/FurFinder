@@ -1,4 +1,10 @@
-export type EstadoReporte = 'Perdido' | 'Avistado' | 'Encontrado' | 'Recuperado' | 'Adopcion';
+export enum EstadoReporte {
+    Perdido = 'Perdido',
+    Avistado = 'Avistado',
+    Encontrado = 'Encontrado',
+    Recuperado = 'Recuperado',
+    Adopcion = 'Adopcion'
+}
 
 export type Ubicacion = {
     direccion: string;
