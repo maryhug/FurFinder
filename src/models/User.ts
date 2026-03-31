@@ -1,6 +1,5 @@
-import { Ubicacion } from "./shared";
+import { Ubicacion } from './shared.js';
 
-// Usuarios que se registran en la plataforma
 export interface Usuarios {
     id: string;
     nombre: string;
@@ -8,5 +7,5 @@ export interface Usuarios {
     email: string;
     telefono: string;
     ubicacion: Ubicacion;
-    isActivo: boolean; // Para desactivación de cuenta
+    isActivo: boolean;
 }

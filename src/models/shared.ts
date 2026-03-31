@@ -1,4 +1,4 @@
-export type EstadoReporte = 'Perdido' | 'Avistado' | 'Encontrado' | 'Recuperado' | 'Adopcion'
+export type EstadoReporte = 'Perdido' | 'Avistado' | 'Encontrado' | 'Recuperado' | 'Adopcion';
 
 export type Ubicacion = {
     direccion: string;
@@ -6,4 +6,4 @@ export type Ubicacion = {
     ciudad: string;
     codigoPostal?: string;
     pais: string;
-}
+};

@@ -1,15 +1,14 @@
-// Decorador básico para validar URL de imagen y simular validación de tamaño
+// Decorador de validación de imagen
 function ImageValidator(target: any, propertyKey: string) {
     const privateKey = `_${propertyKey}`;
-    
     Object.defineProperty(target, propertyKey, {
         get: function() { return this[privateKey]; },
         set: function(newVal: string) {
             if (!newVal) return; 
             if (!newVal.startsWith("http")) {
-                console.error(`Error: La URL de imagen '${newVal}' no es válida.`);
+                console.error(`Error: URL inválida '${newVal}'`);
             } else if (newVal.length > 200) {
-                console.error(`Error: La URL es demasiado larga (máximo 200 caracteres).`);
+                console.error(`Error: URL demasiado larga`);
             } else {
                 this[privateKey] = newVal;
             }
@@ -19,12 +18,21 @@ function ImageValidator(target: any, propertyKey: string) {
     });
 }
 
-// Clase Mascota básica con decorador
+export interface Mascotas {
+    id: string;
+    duenoId: string;
+    nombre?: string;
+    especie: string;
+    raza?: string;
+    color: string;
+    edad?: number;
+    sexo: string;
+}
+
 export class Mascota {
     especie: string;
     raza: string;
     color: string;
-    
     @ImageValidator
     imagen: string = "";
 
@@ -34,16 +42,4 @@ export class Mascota {
         this.color = color;
         this.imagen = imagen;
     }
-}
-
-// Mascotas registradas por los usuarios (Interface para tipado simple)
-export interface Mascotas {
-    id: string;
-    duenoId: string; // Vínculo con el usuario dueño
-    nombre?: string;
-    especie: string;
-    raza?: string;
-    color: string; // Requerido por el usuario
-    edad?: number;
-    sexo: string;
 }

@@ -1,15 +1,9 @@
-import { Mascota } from './models/pet.js';
+import { Mascota } from './models/Pet.js';
 
-console.log("--- SOS PETS: Pruebas en un solo archivo ---");
+console.log("--- SOS PETS: Estructura Final ---");
 
-// Prueba 1: URL válida
-console.log("\n1. Intentando crear mascota con URL válida:");
-const mascota1 = new Mascota("Perro", "Labrador", "Dorado", "https://ejemplo.com/foto.jpg");
-console.log("Imagen guardada:", mascota1.imagen);
+const perro = new Mascota("Perro", "Beagle", "Blanco/Marrón", "https://ejemplo.com/beagle.jpg");
+console.log("Mascota:", perro.especie, "| Imagen:", perro.imagen);
 
-// Prueba 2: URL inválida
-console.log("\n2. Intentando crear mascota con URL inválida:");
-const mascota2 = new Mascota("Gato", "Persa", "Blanco", "foto_local.png");
-console.log("Valor de imagen (debería ser undefined):", mascota2.imagen);
-
-console.log("\n--- Fin de pruebas ---");
+const gatoLog = new Mascota("Gato", "Angora", "Blanco", "url-invalida");
+console.log("Imagen inválida result:", gatoLog.imagen);
