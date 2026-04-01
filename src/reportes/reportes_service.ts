@@ -5,12 +5,6 @@ import { EstadoReporte } from '../models/shared';
 import { validarLongitud, validarUbicacion } from '../common/utils';
 import { ErrorValidacion } from '../common/utils';
 import { BaseService } from '../common/base-service';
-//import { Reportes, Ubicacion } from '../models';
-//import { Reportes, Reportes } from '../models';
-//import { Reportes } from './reportes.model';
-//import { EstadoReporte, validarTransicion } from './reportes_estado';
-//import { crearReporte } from './reportes_functions';
-//import { BaseService } from './base_service';
 
 
 namespace FurFinder.Reportes {
@@ -191,10 +185,6 @@ console.log(obtenerPorEstado(EstadoReporte.Encontrado)) // Devuelve un array con
 
 // Requisitos TS:
 // Clase ReportesService extends BaseService<Reportes>.
-// Clase ReportesService que extiende BaseService<Reportes>
-//import { Reportes } from '../models';
-
-
 export class ReportesService extends BaseService<Reportes> {
     constructor() {
         super();
@@ -267,32 +257,33 @@ export class ReportesService extends BaseService<Reportes> {
     }
 }
 
+//uso de EstadoReporte como union type
 //export type EstadoReporte = 'Perdido' | 'Avistado' | 'Encontrado' | 'Recuperado' | 'Adopcion';
 
 
 
-export function ValidarEntidad(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-    const original = descriptor.value;
-    descriptor.value = function (...args: any[]) {
-        const entidad = args[0];
-        if (!entidad) {
-            throw new ErrorValidacion(propertyKey, 'Entidad no puede ser nula o indefinida');
-        }
-        if ('descripcion' in entidad && (!entidad.descripcion || entidad.descripcion.length < 10)) {
-            throw new ErrorValidacion('descripcion', 'La descripción debe tener al menos 10 caracteres');
-        }
-        return original.apply(this, args);
-    };
-}
-export function LogAuditoria(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-    const original = descriptor.value;
-    descriptor.value = function (...args: any[]) {
-        console.log(`[AUDITORIA] Método ${propertyKey} llamado con:`, args);
-        const result = original.apply(this, args);
-        console.log(`[AUDITORIA] Método ${propertyKey} terminó. Resultado:`, result);
-        return result;
-    };
-}
+// export function ValidarEntidad(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+//     const original = descriptor.value;
+//     descriptor.value = function (...args: any[]) {
+//         const entidad = args[0];
+//         if (!entidad) {
+//             throw new ErrorValidacion(propertyKey, 'Entidad no puede ser nula o indefinida');
+//         }
+//         if ('descripcion' in entidad && (!entidad.descripcion || entidad.descripcion.length < 10)) {
+//             throw new ErrorValidacion('descripcion', 'La descripción debe tener al menos 10 caracteres');
+//         }
+//         return original.apply(this, args);
+//     };
+// }
+// export function LogAuditoria(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+//     const original = descriptor.value;
+//     descriptor.value = function (...args: any[]) {
+//         console.log(`[AUDITORIA] Método ${propertyKey} llamado con:`, args);
+//         const result = original.apply(this, args);
+//         console.log(`[AUDITORIA] Método ${propertyKey} terminó. Resultado:`, result);
+//         return result;
+//     };
+// }
 
 
 
