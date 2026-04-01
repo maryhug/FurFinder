@@ -1,18 +1,18 @@
-import { createInterface, Interface } from 'node:readline/promises';
-import { stdin as input, stdout as output } from 'node:process';
+import { Interface } from 'node:readline/promises';
 
 import { Mascotas } from '../models';
 import { MascotasValidators } from './mascotas.validators';
 import { FurFinder } from './mascotas.service';
+import { titulo, seccion, opcion, errorMsg, okMsg, pregunta, divider, mutedMsg } from '../common/cli-style';
 
 type MascotasService = FurFinder.MascotasNS.MascotasService;
 
 export class MascotasMenu {
     constructor(private readonly service: MascotasService) {}
 
-    async iniciar(): Promise<void> {
-        const rl = createInterface({ input, output });
-        console.log('\n=== MENU MASCOTAS (FurFinder) ===');
+    async iniciar(rl: Interface): Promise<void> {
+        console.clear();
+        console.log(titulo('FurFinder • Mascotas'));
         this.imprimirListadoInicial();
 
         let salir = false;
@@ -21,25 +21,29 @@ export class MascotasMenu {
             const op = await this.preguntar(rl, 'Opcion: ');
             salir = await this.ejecutarOpcion(op, rl);
         }
-
-        rl.close();
     }
 
     private mostrarOpciones(): void {
-        console.log('\n1) Listar');
-        console.log('2) Buscar por ID');
-        console.log('3) Buscar por dueno');
-        console.log('4) Crear');
-        console.log('5) Actualizar');
-        console.log('6) Eliminar');
-        console.log('0) Salir');
+        seccion('Menu mascotas');
+        console.log(opcion('1', 'Listar'));
+        console.log(opcion('2', 'Buscar por ID'));
+        console.log(opcion('3', 'Buscar por dueno'));
+        console.log(opcion('4', 'Crear'));
+        console.log(opcion('5', 'Actualizar'));
+        console.log(opcion('6', 'Eliminar'));
+        console.log(opcion('0', 'Volver'));
+        divider();
     }
 
     private imprimirListadoInicial(): void {
         const items = this.service.obtenerTodas();
-        if (!items.length) return console.log('No hay mascotas cargadas.');
-        console.log('\nDatos de prueba cargados:');
+        if (!items.length) {
+            console.log(mutedMsg('No hay mascotas cargadas.'));
+            return;
+        }
+        seccion('Datos de prueba cargados');
         console.table(items);
+        divider();
     }
 
     private async ejecutarOpcion(op: string, rl: Interface): Promise<boolean> {
@@ -51,62 +55,81 @@ export class MascotasMenu {
             if (op === '5') return await this.opActualizar(rl);
             if (op === '6') return await this.opEliminar(rl);
             if (op === '0') return true;
-            console.log('Opcion invalida');
+            console.log(errorMsg('Opcion invalida'));
         } catch (e) {
             const msg = e instanceof Error ? e.message : String(e);
-            console.error('Error:', msg);
+            console.error(errorMsg(msg));
         }
         return false;
     }
 
     private opListar(): boolean {
+        seccion('Listado de mascotas');
         console.table(this.service.obtenerTodas());
+        divider();
         return false;
     }
 
     private async opBuscarPorId(rl: Interface): Promise<boolean> {
+        seccion('Buscar por ID');
         const id = await this.preguntar(rl, 'ID: ');
-        console.log(this.service.obtenerPorId(id) ?? 'No encontrada');
+        const res = this.service.obtenerPorId(id);
+        console.log(res ?? errorMsg('No encontrada'));
+        divider();
         return false;
     }
 
     private async opBuscarPorDueno(rl: Interface): Promise<boolean> {
+        seccion('Buscar por dueno');
         const duenoId = await this.preguntar(rl, 'duenoId: ');
         console.table(this.service.obtenerPorDueno(duenoId));
+        divider();
         return false;
     }
 
     private async opCrear(rl: Interface): Promise<boolean> {
+        seccion('Crear mascota');
         const data = await this.leerPayloadCrear(rl);
         const creada = this.service.crearMascota(data);
-        console.log('Creada:', creada);
+        console.log(okMsg('Creada:'), creada);
+        divider();
         return false;
     }
 
     private async opActualizar(rl: Interface): Promise<boolean> {
+        seccion('Actualizar mascota');
         const id = await this.preguntar(rl, 'ID a actualizar: ');
         const patch = await this.leerPayloadActualizar(rl);
         const out = this.service.actualizarMascota(id, patch);
-        console.log(out ?? 'No encontrada');
+        console.log(out ?? errorMsg('No encontrada'));
+        divider();
         return false;
     }
 
     private async opEliminar(rl: Interface): Promise<boolean> {
+        seccion('Eliminar mascota');
         const id = await this.preguntar(rl, 'ID a eliminar: ');
-        console.log(this.service.eliminarMascota(id) ? 'Eliminada' : 'No encontrada');
+        console.log(
+            this.service.eliminarMascota(id) ? okMsg('Eliminada') : errorMsg('No encontrada')
+        );
+        divider();
         return false;
     }
 
-    // Helpers de CLI
+    // Helpers de CLI (idénticos salvo mensajes)
 
-    private async seleccionarOpcion<T extends string>(rl: Interface, titulo: string, opciones: T[]): Promise<T> {
+    private async seleccionarOpcion<T extends string>(
+        rl: Interface,
+        tituloTexto: string,
+        opciones: T[],
+    ): Promise<T> {
         while (true) {
-            console.log(`\n${titulo}:`);
-            opciones.forEach((op, i) => console.log(`${i + 1}) ${op}`));
+            seccion(tituloTexto);
+            opciones.forEach((op, i) => console.log(opcion(String(i + 1), op)));
             const raw = await this.preguntar(rl, 'Elige un numero: ');
             const idx = Number(raw) - 1;
             if (Number.isInteger(idx) && idx >= 0 && idx < opciones.length) return opciones[idx];
-            console.log('Opcion invalida, intenta de nuevo.');
+            console.log(errorMsg('Opcion invalida, intenta de nuevo.'));
         }
     }
 
@@ -114,12 +137,12 @@ export class MascotasMenu {
         while (true) {
             const duenoId = await this.preguntar(rl, 'duenoId: ');
             try {
-                // Solo validamos dueño aquí, usando validators y el service actual
-                // (MascotasValidators no necesita service, solo UsuariosLookup que ya está dentro)
                 MascotasValidators.validarDueno(duenoId, (this.service as any)['usuariosService']);
                 return duenoId;
             } catch (e) {
-                console.log(e instanceof Error ? e.message : 'duenoId invalido');
+                console.log(
+                    errorMsg(e instanceof Error ? e.message : 'duenoId invalido'),
+                );
             }
         }
     }
@@ -131,7 +154,7 @@ export class MascotasMenu {
             try {
                 return MascotasValidators.parsearEdad(raw);
             } catch (e) {
-                console.log(e instanceof Error ? e.message : 'edad invalida');
+                console.log(errorMsg(e instanceof Error ? e.message : 'edad invalida'));
             }
         }
     }
@@ -142,7 +165,7 @@ export class MascotasMenu {
         const especie = await this.seleccionarOpcion(
             rl,
             'Especie',
-            FurFinder.MascotasNS.MascotasService.ESPECIES_OPCIONES
+            FurFinder.MascotasNS.MascotasService.ESPECIES_OPCIONES,
         );
         const raza = await this.preguntar(rl, 'raza (opcional): ');
         const color = await this.preguntar(rl, 'color: ');
@@ -150,7 +173,7 @@ export class MascotasMenu {
         const sexo = await this.seleccionarOpcion(
             rl,
             'Sexo',
-            FurFinder.MascotasNS.MascotasService.SEXOS_OPCIONES
+            FurFinder.MascotasNS.MascotasService.SEXOS_OPCIONES,
         );
         return {
             duenoId,
@@ -174,7 +197,7 @@ export class MascotasMenu {
             patch.especie = await this.seleccionarOpcion(
                 rl,
                 'Especie',
-                FurFinder.MascotasNS.MascotasService.ESPECIES_OPCIONES
+                FurFinder.MascotasNS.MascotasService.ESPECIES_OPCIONES,
             );
         }
 
@@ -192,7 +215,7 @@ export class MascotasMenu {
             patch.sexo = await this.seleccionarOpcion(
                 rl,
                 'Sexo',
-                FurFinder.MascotasNS.MascotasService.SEXOS_OPCIONES
+                FurFinder.MascotasNS.MascotasService.SEXOS_OPCIONES,
             );
         }
 
@@ -200,6 +223,6 @@ export class MascotasMenu {
     }
 
     private async preguntar(rl: Interface, texto: string): Promise<string> {
-        return (await rl.question(texto)).trim();
+        return (await rl.question(pregunta(texto))).trim();
     }
 }

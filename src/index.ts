@@ -34,7 +34,7 @@ async function main(): Promise<void> {
         {
             clave: '1',
             titulo: 'Mascotas',
-            run: () => mascotasMenu.iniciar(),
+            run: (rl) => mascotasMenu.iniciar(rl),
         },
         // Ejemplos futuros:
         // { clave: '2', titulo: 'Usuarios', run: () => usuariosMenu.iniciar() },

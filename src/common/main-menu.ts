@@ -1,11 +1,11 @@
 // src/common/main-menu.ts
-import { createInterface } from 'node:readline/promises';
+import { createInterface, Interface } from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 
 export type OpcionMenu = {
-    clave: string;               // ej: '1'
-    titulo: string;              // ej: 'Mascotas'
-    run: () => Promise<void>;    // función que lanza el sub-menú
+    clave: string;
+    titulo: string;
+    run: (rl: Interface) => Promise<void>;
 };
 
 export async function menuPrincipal(opciones: OpcionMenu[]): Promise<void> {
@@ -33,7 +33,7 @@ export async function menuPrincipal(opciones: OpcionMenu[]): Promise<void> {
         }
 
         try {
-            await opcion.run();
+            await opcion.run(rl);
         } catch (e) {
             const msg = e instanceof Error ? e.message : String(e);
             console.error('Error ejecutando opcion:', msg);
