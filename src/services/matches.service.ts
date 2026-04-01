@@ -1,8 +1,8 @@
-import { BaseService } from "../common/base-service";
-import { DataMascotas } from "../data/pets.data";
-import { Match } from "../models/Match";
-import { Reportes } from "../models/Report";
-import { EstadoReporte } from "../models/shared";
+import { BaseService } from "../common/base-service.js";
+import { DataMascotas } from "../data/pets.data.js";
+import { Match } from "../models/Match.js";
+import { Reportes } from "../models/Report.js";
+import { EstadoReporte } from "../models/Shared.js";
 
 export class MatchesService extends BaseService<Match> {
     constructor() {
@@ -46,7 +46,6 @@ export class MatchesService extends BaseService<Match> {
         };
 
         this.data.set(nuevoMatch.id, nuevoMatch);
-        console.log(`[MatchesService] Match manual creado: ${reportePerdidoId} <-> ${reporteEncontradoId}`);
         return nuevoMatch;
     }
 
@@ -65,7 +64,6 @@ export class MatchesService extends BaseService<Match> {
         const reporteEncontrado = reporte1.estado === EstadoReporte.Encontrado ? reporte1 : reporte2;
 
         if (reporteEncontrado.fecha < reportePerdido.fecha) {
-            console.log(`[MatchesService] Coincidencia descartada: La mascota no pudo ser encontrada antes de perderse.`);
             return false;
         }
         

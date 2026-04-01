@@ -1,5 +1,5 @@
 // src/common/utils.ts
-import { Ubicacion } from '../models';
+import { Ubicacion } from '../models/Shared.js';
 
 // ─── Clase de error personalizada ────────────────────────────────────────────
 
@@ -79,7 +79,7 @@ export function validarUbicacion(ubicacion: Ubicacion): void {
     for (const campo of campos) {
         const valor = ubicacion[campo];
         if (!valor || valor.trim().length === 0) {
-            throw new ErrorValidacion(`ubicacion.${campo}`, 'no puede estar vacío');
+            throw new ErrorValidacion(`ubicacion.${String(campo)}`, 'no puede estar vacío');
         }
     }
 

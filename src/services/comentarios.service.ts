@@ -1,5 +1,5 @@
-import { BaseService } from "../common/base-service";
-import { Comentario } from "../models/Report";
+import { BaseService } from "../common/base-service.js";
+import { Comentario } from "../models/Report.js";
 
 export class ComentariosService extends BaseService<Comentario> {
     
@@ -30,7 +30,6 @@ export class ComentariosService extends BaseService<Comentario> {
         };
 
         this.data.set(nuevoComentario.id, nuevoComentario);
-        console.log(`[ComentariosService] Comentario agregado al reporte ${payload.reporteId}`);
         return nuevoComentario;
     }
 
