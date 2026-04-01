@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 
+// Estilos para la terminal
 export const titulo = (text: string) =>
     chalk.bgMagenta.white.bold(` ${text} `);
 
