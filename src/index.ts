@@ -1,3 +1,8 @@
+
+import { iniciarMenu } from './usuarios/usuario.service.js';
+
+iniciarMenu();
+
 // src/index.ts
 import { FurFinder } from './mascotas/mascotas.service';
 import { MascotasMenu } from './mascotas/mascotas.menu';
@@ -49,3 +54,4 @@ main().catch((error) => {
     console.error('Error al iniciar FurFinder:', error);
     process.exit(1);
 });
+
