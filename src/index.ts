@@ -8,6 +8,7 @@ import { DataReportes } from './data/reports.data.js';
 
 import { MatchesService } from "./services/matches.service.js";
 import { ComentariosService } from "./services/comentarios.service.js";
+import { FurFinde } from "./reportes/reportes_service.js";
 
 type UsuarioMinimo = { id: string; nombre: string; isActivo: boolean };
 
@@ -23,6 +24,7 @@ function crearUsuariosLookup() {
 // Tus instancias globales o pasadas por parámetro
 const matchesService = new MatchesService();
 const comentariosService = new ComentariosService();
+const reportesService = new FurFinde.Reportes.ReportesService();
 
 /**
  * Tu lógica estrella de matching, integrada para el arranque
@@ -98,7 +100,16 @@ async function main(): Promise<void> {
                 console.log("\n--- COMENTARIOS RECIENTES ---");
                 console.table(comentariosService.obtenerTodos());
             }
+        },
+        {
+            clave: '5',
+            titulo: 'Ver Reportes',
+            run: async () => {
+                console.log("\n--- REPORTES REGISTRADOS ---");
+                console.table(reportesService.obtenerTodos());
+            }
         }
+
     ];
 
     await menuPrincipal(opciones);

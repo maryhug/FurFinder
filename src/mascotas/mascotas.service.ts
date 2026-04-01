@@ -14,13 +14,6 @@ export namespace FurFinder {
             private static readonly ESPECIES: EspecieMascota[] = ['Perro', 'Gato', 'Ave', 'Conejo', 'Reptil', 'Otro'];
             private static readonly SEXOS: SexoMascota[] = ['Macho', 'Hembra', 'Desconocido'];
 
-            protected generarId(): string {
-                for (let i = 1; i <= 999; i++) {
-                    const id = String(i);
-                    if (!this.data.has(id)) return id;
-                }
-                throw new Error('se alcanzo el limite de IDs (999)');
-            }
 
             validarCrear(payload: Partial<Mascotas>): void {
                 MascotasValidators.validarCrear(payload, this.usuariosService);
@@ -34,7 +27,8 @@ export namespace FurFinder {
             @LogAuditoria
             crearMascota(data: Omit<Mascotas, 'id'>): Mascotas {
                 this.validarCrear(data);
-                const nueva = this.armarMascota(data, this.generarId());
+                const idGenerado = this.generarId(); // ID alfanumerico de 3 caracteres heredado de BaseService
+                const nueva = this.armarMascota(data, idGenerado);
                 this.data.set(nueva.id, nueva);
                 return nueva;
             }
