@@ -1,4 +1,4 @@
-import { Mascotas } from "../models/Pet";
+import { Mascotas } from '../models/Pet.js';
 
 export const DataMascotas: Mascotas[] = [
     {

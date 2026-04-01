@@ -1,4 +1,4 @@
-import { EstadoReporte, Ubicacion } from './Shared';
+import { EstadoReporte, Ubicacion } from './Shared.js';
 
 export interface Reportes {
     id: string;
