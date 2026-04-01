@@ -1,4 +1,5 @@
 // Class abstracta para la creacion de servicios, todos trabajamos con esta clase para interpretar la informacion
+
 export abstract class BaseService<T extends { id: string }> {
     protected data: Map<string, T> = new Map();
 
@@ -7,7 +8,24 @@ export abstract class BaseService<T extends { id: string }> {
     abstract validarActualizar(payload: Partial<T>): void;
 
     protected generarId(): string {
-        return crypto.randomUUID();
+        const maxIntentos = 200;
+
+        for (let i = 0; i < maxIntentos; i++) {
+            const id = this.generarAlfanumerico();
+            if (!this.existePorId(id)) return id;
+        }
+
+        throw new Error('No se pudo generar un ID alfanumerico unico.');
+    }
+
+    private generarAlfanumerico(): string {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        return `${this.randomChar(chars)}${this.randomChar(chars)}${this.randomChar(chars)}`;
+    }
+
+    private randomChar(chars: string): string {
+        const idx = crypto.getRandomValues(new Uint32Array(1))[0] % chars.length;
+        return chars[idx];
     }
 
     // Retorna TODOS los registros (cada servicio filtra si necesita)
