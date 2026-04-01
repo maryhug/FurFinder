@@ -72,17 +72,3 @@ export const DataUsuarios: Usuarios[] = [
         isActivo: true,
     },
 ];
-
-        apellido: "Duran",
-        email: "[EMAIL_ADDRESS]",
-        telefono: "987654321",
-        ubicacion: {
-            direccion: "Calle Chimeneas 123",
-            barrio: "La Colina",
-            ciudad: "Medellin",
-            pais: "Colombia"
-        },
-        isActivo: true
-    }
-]
-

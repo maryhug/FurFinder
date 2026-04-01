@@ -1,8 +1,8 @@
-import { Mascotas, EspecieMascota, SexoMascota } from '../models';
-import { BaseService } from '../common/base-service';
-import { ValidarEntidad, LogAuditoria } from '../decorators/validadores';
-import { capitalizar } from '../common/utils';
-import { MascotasValidators, UsuariosLookup } from './mascotas.validators';
+import { Mascotas, EspecieMascota, SexoMascota } from '../models/Pet.js';
+import { BaseService } from '../common/base-service.js';
+import { ValidarEntidad, LogAuditoria } from '../decorators/validadores.js';
+import { capitalizar } from '../common/utils.js';
+import { MascotasValidators, UsuariosLookup } from './mascotas.validators.js';
 
 export namespace FurFinder {
     export namespace MascotasNS {

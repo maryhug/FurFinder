@@ -1,3 +1,4 @@
+// Class abstracta para la creacion de servicios, todos trabajamos con esta clase para interpretar la informacion
 export abstract class BaseService<T extends { id: string }> {
     protected data: Map<string, T> = new Map();
 

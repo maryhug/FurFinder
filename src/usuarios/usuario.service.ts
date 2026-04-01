@@ -1,4 +1,4 @@
-import * as readline from 'readline';
+import { createInterface, Interface as ReadlineInterface } from 'node:readline/promises';
 import { Usuarios } from '../models/User.js';
 import { Ubicacion } from '../models/shared.js';
 import { DataUsuarios } from '../data/users.data.js';
@@ -203,10 +203,10 @@ export const userService = new UsuarioService();
 
 // ── Menú interactivo ──────────────────────────────────────────────────────────
 
-const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+// ── Menú interactivo ──────────────────────────────────────────────────────────
 
-const ask = (pregunta: string): Promise<string> =>
-    new Promise(resolve => rl.question(pregunta, (r: string) => resolve(r.trim())));
+const ask = (rl: ReadlineInterface, pregunta: string): Promise<string> =>
+    rl.question(pregunta).then((r: string) => r.trim());
 
 function separador() { console.log('\n' + '─'.repeat(40)); }
 
@@ -219,25 +219,25 @@ function mostrarUsuario(u: Usuarios) {
     console.log(`  Activo   : ${u.isActivo ? 'Sí' : 'No'}`);
 }
 
-async function pedirUbicacion(): Promise<Ubicacion> {
-    const direccion = await ask('  Dirección : ');
-    const barrio    = await ask('  Barrio    : ');
-    const ciudad    = await ask('  Ciudad    : ');
-    const pais      = await ask('  País      : ');
+async function pedirUbicacion(rl: ReadlineInterface): Promise<Ubicacion> {
+    const direccion = await ask(rl, '  Dirección : ');
+    const barrio    = await ask(rl, '  Barrio    : ');
+    const ciudad    = await ask(rl, '  Ciudad    : ');
+    const pais      = await ask(rl, '  País      : ');
     return { direccion, barrio, ciudad, pais };
 }
 
-async function opcionCrear() {
+async function opcionCrear(rl: ReadlineInterface) {
     console.log('\n[ Crear usuario ]');
     try {
-        const id        = await ask('  Id       : ');
-        const nombre    = await ask('  Nombre   : ');
-        const apellido  = await ask('  Apellido : ');
-        const email     = await ask('  Email    : ');
-        const telefono  = await ask('  Teléfono : ');
-        const ubicacion = await pedirUbicacion();
+        const id        = await ask(rl, '  Id       : ');
+        const nombre    = await ask(rl, '  Nombre   : ');
+        const apellido  = await ask(rl, '  Apellido : ');
+        const email     = await ask(rl, '  Email    : ');
+        const telefono  = await ask(rl, '  Teléfono : ');
+        const ubicacion = await pedirUbicacion(rl);
         mostrarUsuario(userService.crearUsuario({ id, nombre, apellido, email, telefono, ubicacion }));
-    } catch (e) { console.error('  ✖ Error:', (e as Error).message); }
+    } catch (e) { console.error('  Error:', (e as Error).message); }
 }
 
 async function opcionListar() {
@@ -250,42 +250,44 @@ async function opcionListar() {
     });
 }
 
-async function opcionBuscar() {
+async function opcionBuscar(rl: ReadlineInterface) {
     console.log('\n[ Buscar usuario por id ]');
     try {
-        mostrarUsuario(userService.obtenerUsuarioPorId(await ask('  Id: ')));
-    } catch (e) { console.error('  ✖ Error:', (e as Error).message); }
+        mostrarUsuario(userService.obtenerUsuarioPorId(await ask(rl, '  Id: ')));
+    } catch (e) { console.error('  Error:', (e as Error).message); }
 }
 
-async function opcionActualizar() {
+async function opcionActualizar(rl: ReadlineInterface) {
     console.log('\n[ Actualizar usuario ]');
     try {
-        const id       = await ask('  Id del usuario: ');
+        const id       = await ask(rl, '  Id del usuario: ');
         console.log('  Deja en blanco los campos que no quieres cambiar.');
-        const nombre   = await ask('  Nuevo nombre   : ');
-        const apellido = await ask('  Nuevo apellido : ');
-        const email    = await ask('  Nuevo email    : ');
-        const telefono = await ask('  Nuevo teléfono : ');
+        const nombre   = await ask(rl, '  Nuevo nombre   : ');
+        const apellido = await ask(rl, '  Nuevo apellido : ');
+        const email    = await ask(rl, '  Nuevo email    : ');
+        const telefono = await ask(rl, '  Nuevo teléfono : ');
         const data: ActualizarUsuarioDTO = {};
         if (nombre)   data.nombre   = nombre;
         if (apellido) data.apellido = apellido;
         if (email)    data.email    = email;
         if (telefono) data.telefono = telefono;
-        if ((await ask('  ¿Actualizar ubicación? (s/n): ')).toLowerCase() === 's')
-            data.ubicacion = await pedirUbicacion();
+        if ((await ask(rl, '  ¿Actualizar ubicación? (s/n): ')).toLowerCase() === 's')
+            data.ubicacion = await pedirUbicacion(rl);
         mostrarUsuario(userService.actualizarUsuario(id, data));
-    } catch (e) { console.error('  ✖ Error:', (e as Error).message); }
+    } catch (e) { console.error('  Error:', (e as Error).message); }
 }
 
-async function opcionDesactivar() {
+async function opcionDesactivar(rl: ReadlineInterface) {
     console.log('\n[ Desactivar usuario ]');
     try {
-        const u = userService.desactivarUsuario(await ask('  Id del usuario: '));
-        console.log(`\n  ✔ Cuenta de ${u.nombre} ${u.apellido} desactivada.`);
-    } catch (e) { console.error('  ✖ Error:', (e as Error).message); }
+        const u = userService.desactivarUsuario(await ask(rl, '  Id del usuario: '));
+        console.log(`\n  Cuenta de ${u.nombre} ${u.apellido} desactivada.`);
+    } catch (e) { console.error('  Error:', (e as Error).message); }
 }
 
-export async function iniciarMenu() {
+export async function iniciarMenu(rlExterno?: ReadlineInterface) {
+    const rl = rlExterno || createInterface({ input: process.stdin, output: process.stdout });
+    
     while (true) {
         separador();
         console.log('  FURFINDER — Gestión de Usuarios');
@@ -297,18 +299,19 @@ export async function iniciarMenu() {
         console.log('  5. Desactivar usuario');
         console.log('  0. Salir');
         separador();
-        switch (await ask('  Elige una opción: ')) {
-            case '1': await opcionCrear();      break;
-            case '2': await opcionListar();     break;
-            case '3': await opcionBuscar();     break;
-            case '4': await opcionActualizar(); break;
-            case '5': await opcionDesactivar(); break;
+        switch (await ask(rl, '  Elige una opción: ')) {
+            case '1': await opcionCrear(rl);      break;
+            case '2': await opcionListar();       break;
+            case '3': await opcionBuscar(rl);     break;
+            case '4': await opcionActualizar(rl); break;
+            case '5': await opcionDesactivar(rl); break;
             case '0':
-                console.log('\n  Hasta luego.\n');
-                rl.close();
-                process.exit(0);
+                console.log('\n  Volviendo al menú principal...\n');
+                if (!rlExterno) rl.close();
+                return; // En lugar de exit
             default:
                 console.log('  Opción no válida.');
         }
     }
 }
+
