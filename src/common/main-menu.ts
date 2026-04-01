@@ -2,6 +2,7 @@
 import { createInterface, Interface } from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 
+// Menu principal
 export type OpcionMenu = {
     clave: string;
     titulo: string;
