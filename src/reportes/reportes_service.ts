@@ -1,13 +1,14 @@
-import {reportes} from '../data/data_reporte';
-import { Reportes } from '../models/Report';
-import { Ubicacion  } from '../models';
-import { EstadoReporte } from '../models/shared';
-import { validarLongitud, validarUbicacion } from '../common/utils';
-import { ErrorValidacion } from '../common/utils';
-import { BaseService } from '../common/base-service';
+import {reportes} from '../data/data_reporte.js';
+import { Reportes } from '../models/Report.js';
+import { Ubicacion  } from '../models/shared.js';
+import { EstadoReporte } from '../models/shared.js';
+import { validarLongitud, validarUbicacion } from '../common/utils.js';
+import { ErrorValidacion } from '../common/utils.js';
+import { BaseService } from '../common/base-service.js';
+import { ValidarEntidad, LogAuditoria } from '../decorators/validadores.js';
 
-
-namespace FurFinder.Reportes {
+ 
+export namespace FurFinde.Reportes {
   //Validar si existe mascotaId y usuarioId
 export const existe =function (mascotaId:string, usuarioId:string):Reportes | undefined {
     return reportes.find(reporte => reporte.mascotaId === mascotaId && reporte.usuarioId === usuarioId);
@@ -75,10 +76,10 @@ export const transicionesValidas: Record<EstadoReporte, EstadoReporte[]> = {
 };
 //mirar si se puede cambiar de estado------
 export const actualizarEstado = function (mascotaId: string, nuevoEstado: EstadoReporte): string {
-    const reporte = reportes.find(r => r.mascotaId === mascotaId);
-    if (!reporte) return "Mascota no encontrada";
+    const reporte:Reportes[] = [reportes.find(r => r.mascotaId === mascotaId)];
+    if (!reporte[0]) return "Mascota no encontrada";
 
-    const estadoActual = reporte.estado;
+    const estadoActual = reporte[0].estado;
 
     if (estadoActual === nuevoEstado) {
         return `El estado ya es ${nuevoEstado}`;
@@ -87,7 +88,7 @@ export const actualizarEstado = function (mascotaId: string, nuevoEstado: Estado
     if (!transicionesValidas[estadoActual].includes(nuevoEstado)){
         return `No puedes cambiar de ${estadoActual} a ${nuevoEstado}`
     }
-    reporte.estado = nuevoEstado;
+    reporte[0].estado = nuevoEstado;
     return `Estado actualizado de ${estadoActual} a ${nuevoEstado}`;
 
 }
@@ -155,16 +156,16 @@ console.log(reportes) // Devuelve el array de reportes sin el reporte eliminado
 //Métodos de estados:
 // cambiarEstado(id: string, nuevoEstado: EstadoReporte): Reportes | null
 export const cambiarEstado=(id:string, nuevoEstado: EstadoReporte):Reportes | null =>{
-    const reporte = reportes.find(r => r.id === id);
-    if (!reporte) {
+    const reporte:Reportes[] = [reportes.find(r => r.id === id)];
+    if (!reporte[0]) {
         return null;
     }
-    const estadoActual = reporte.estado;
+    const estadoActual = reporte[0].estado;
     if (!transicionesValidas[estadoActual].includes(nuevoEstado)){
         throw new ErrorValidacion('estado', `No puedes cambiar de ${estadoActual} a ${nuevoEstado}`);
     }
-    reporte.estado = nuevoEstado;
-    return reporte;
+    reporte[0].estado = nuevoEstado;
+    return reporte[0];
 
 }
 console.log(cambiarEstado("1", EstadoReporte.Recuperado)) // Devuelve el reporte con el estado actualizado a "Recuperado"
@@ -211,35 +212,35 @@ export class ReportesService extends BaseService<Reportes> {
     }
 
     // --- Métodos específicos de ReportesService ---
-    crearReporte(data: Omit<Reportes, 'id' | 'fecha'>): Reportes {
-        const nuevo: Reportes = {
-            id: this.generarId(),
-            fecha: new Date(),
-            ...data
-        };
-        this.validarCrear(nuevo);
-        this.data.set(nuevo.id, nuevo);
-        return nuevo;
-    }
+    // crearReporte(data: Omit<Reportes, 'id' | 'fecha'>): Reportes {
+    //     const nuevo: Reportes = {
+    //         id: this.generarId(),
+    //         fecha: new Date(),
+    //         ...data
+    //     };
+    //     this.validarCrear(nuevo);
+    //     this.data.set(nuevo.id, nuevo);
+    //     return nuevo;
+    // }
 
     obtenerPorMascota(mascotaId: string): Reportes | undefined {
         return Array.from(this.data.values()).find(r => r.mascotaId === mascotaId);
     }
 
-    actualizarEstado(mascotaId: string, nuevoEstado: EstadoReporte): string {
-        const reporte = this.obtenerPorMascota(mascotaId);
-        if (!reporte) return 'Mascota no encontrada';
+    // actualizarEstado(mascotaId: string, nuevoEstado: EstadoReporte): string {
+    //     const reporte = this.obtenerPorMascota(mascotaId);
+    //     if (!reporte) return 'Mascota no encontrada';
 
-        const estadoActual = reporte.estado;
-        if (estadoActual === nuevoEstado) return `El estado ya es ${nuevoEstado}`;
-        if (!validarTransicion(estadoActual, nuevoEstado)) {
-            return `No puedes cambiar de ${estadoActual} a ${nuevoEstado}`;
-        }
+    //     const estadoActual = reporte.estado;
+    //     if (estadoActual === nuevoEstado) return `El estado ya es ${nuevoEstado}`;
+    //     if (!validarTransicion(estadoActual, nuevoEstado)) {
+    //         return `No puedes cambiar de ${estadoActual} a ${nuevoEstado}`;
+    //     }
 
-        reporte.estado = nuevoEstado;
-        this.data.set(reporte.id, reporte); // actualizar en el Map
-        return `Estado actualizado de ${estadoActual} a ${nuevoEstado}`;
-    }
+    //     reporte.estado = nuevoEstado;
+    //     this.data.set(reporte.id, reporte); // actualizar en el Map
+    //     return `Estado actualizado de ${estadoActual} a ${nuevoEstado}`;
+    // }
 
     ubicacionCompleta(mascotaId: string): Ubicacion | string {
         const reporte = this.obtenerPorMascota(mascotaId);
@@ -255,39 +256,55 @@ export class ReportesService extends BaseService<Reportes> {
         }
         return reporte.ubicacion;
     }
+
+    @LogAuditoria
+    @ValidarEntidad
+    crearReporte(data: Omit<Reportes, 'id' | 'fecha'>): Reportes {
+    const nuevoReporte: Reportes = {
+        id: (this.data.size + 1).toString(),
+        fecha: new Date(),
+        ...data
+    };
+
+    this.data.set(nuevoReporte.id, nuevoReporte);
+    return nuevoReporte;
+}
+    @LogAuditoria
+    @ValidarEntidad
+    actualizarReporte(id: string, cambios: Partial<Reportes>): Reportes | null {
+    const reporte = this.obtenerPorId(id);
+    if (!reporte) return null;
+
+    const actualizado = { ...reporte, ...cambios };
+    this.data.set(id, actualizado);
+
+    return actualizado;
 }
 
-//uso de EstadoReporte como union type
-//export type EstadoReporte = 'Perdido' | 'Avistado' | 'Encontrado' | 'Recuperado' | 'Adopcion';
+    @LogAuditoria
+    actualizarEstado(mascotaId: string, nuevoEstado: EstadoReporte): string {
 
+    const reporte = Array.from(this.data.values())
+        .find(r => r.mascotaId === mascotaId);
 
+    if (!reporte) return "Mascota no encontrada";
 
-// export function ValidarEntidad(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-//     const original = descriptor.value;
-//     descriptor.value = function (...args: any[]) {
-//         const entidad = args[0];
-//         if (!entidad) {
-//             throw new ErrorValidacion(propertyKey, 'Entidad no puede ser nula o indefinida');
-//         }
-//         if ('descripcion' in entidad && (!entidad.descripcion || entidad.descripcion.length < 10)) {
-//             throw new ErrorValidacion('descripcion', 'La descripción debe tener al menos 10 caracteres');
-//         }
-//         return original.apply(this, args);
-//     };
-// }
-// export function LogAuditoria(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-//     const original = descriptor.value;
-//     descriptor.value = function (...args: any[]) {
-//         console.log(`[AUDITORIA] Método ${propertyKey} llamado con:`, args);
-//         const result = original.apply(this, args);
-//         console.log(`[AUDITORIA] Método ${propertyKey} terminó. Resultado:`, result);
-//         return result;
-//     };
-// }
+    const estadoActual = reporte.estado;
 
+    if (estadoActual === nuevoEstado) {
+        return `El estado ya es ${nuevoEstado}`;
+    }
 
+    if (!transicionesValidas[estadoActual].includes(nuevoEstado)) {
+        return `No puedes cambiar de ${estadoActual} a ${nuevoEstado}`;
+    }
 
+    reporte.estado = nuevoEstado;
+    this.data.set(reporte.id, reporte);
 
-
+    return `Estado actualizado de ${estadoActual} a ${nuevoEstado}`;
+}
+    
+}
 
 }

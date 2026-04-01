@@ -1,5 +1,4 @@
-// src/common/base-service.ts
-
+// Class abstracta para la creacion de servicios, todos trabajamos con esta clase para interpretar la informacion
 export abstract class BaseService<T extends { id: string }> {
     protected data: Map<string, T> = new Map();
 
@@ -32,5 +31,5 @@ export abstract class BaseService<T extends { id: string }> {
 }
 
 /*
-🔑 Se añaden existePorId y fusionar como utilidades protegidas que todos los servicios del equipo pueden reutilizar sin duplicar lógica.
+Se añaden existePorId y fusionar como utilidades protegidas que todos los servicios del equipo pueden reutilizar sin duplicar lógica.
 */

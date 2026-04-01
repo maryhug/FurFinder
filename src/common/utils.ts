@@ -1,8 +1,7 @@
 // src/common/utils.ts
-import { Ubicacion } from '../models';
+import { Ubicacion } from '../models/Shared.js';
 
-// ─── Clase de error personalizada ────────────────────────────────────────────
-
+// Clase de error personalizada
 export class ErrorValidacion extends Error {
     constructor(campo: string, mensaje: string) {
         super(`[Validación] ${campo}: ${mensaje}`);
@@ -10,13 +9,13 @@ export class ErrorValidacion extends Error {
     }
 }
 
-// ─── Regexes compartidas ─────────────────────────────────────────────────────
+// Regexes compartidas
 
 const REGEX_EMAIL    = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
 const REGEX_TELEFONO = /^\+57[0-9]{10}$/;          // Colombia: +57 + 10 dígitos
 const REGEX_SOLO_LETRAS = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s'-]+$/;
 
-// ─── Validadores de texto ─────────────────────────────────────────────────────
+// Validadores de texto
 
 export function validarLongitud(
     valor: string,
@@ -54,7 +53,7 @@ export function validarTelefono(telefono: string): void {
     }
 }
 
-// ─── Validadores numéricos ────────────────────────────────────────────────────
+// Validadores numéricos
 
 export function validarEdadPositiva(edad: number, campo = 'edad'): void {
     if (!Number.isFinite(edad) || edad <= 0) {
@@ -62,7 +61,7 @@ export function validarEdadPositiva(edad: number, campo = 'edad'): void {
     }
 }
 
-// ─── Validador de Ubicacion ───────────────────────────────────────────────────
+// Validador de Ubicacion
 
 export function validarUbicacion(ubicacion: Ubicacion): void {
     if (!ubicacion) {
@@ -79,7 +78,7 @@ export function validarUbicacion(ubicacion: Ubicacion): void {
     for (const campo of campos) {
         const valor = ubicacion[campo];
         if (!valor || valor.trim().length === 0) {
-            throw new ErrorValidacion(`ubicacion.${campo}`, 'no puede estar vacío');
+            throw new ErrorValidacion(`ubicacion.${String(campo)}`, 'no puede estar vacío');
         }
     }
 
@@ -94,7 +93,7 @@ export function validarUbicacion(ubicacion: Ubicacion): void {
     }
 }
 
-// ─── Helpers de unicidad (para usar dentro de los servicios) ──────────────────
+// Helpers de unicidad (para usar dentro de los servicios)
 
 export function verificarUnicidad<T>(
     items: T[],
@@ -116,7 +115,7 @@ export function verificarUnicidad<T>(
     }
 }
 
-// ─── Helper de formato ────────────────────────────────────────────────────────
+// Helper de formato
 
 export function capitalizar(texto: string): string {
     return texto.trim().toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());

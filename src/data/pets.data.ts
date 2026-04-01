@@ -1,4 +1,4 @@
-import { Mascotas } from "../models/Pet";
+import { Mascotas } from '../models/Pet.js';
 
 export const DataMascotas: Mascotas[] = [
     {
@@ -20,5 +20,15 @@ export const DataMascotas: Mascotas[] = [
         color: "Blanco",
         edad: 2,
         sexo: "Macho"
+    },
+    {
+        id: "3",
+        duenoId: "3",
+        nombre: "Sombra",
+        especie: "Perro",
+        raza: "Pastor Belga",
+        color: "Negro",
+        edad: 3,
+        sexo: "Hembra"
     }
 ];
