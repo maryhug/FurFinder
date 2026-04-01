@@ -1,4 +1,4 @@
-import * as readline from 'readline';
+import { createInterface, Interface as ReadlineInterface } from 'node:readline/promises';
 import { Usuarios } from '../models/User.js';
 import { Ubicacion } from '../models/shared.js';
 import { DataUsuarios } from '../data/users.data.js';
@@ -205,8 +205,8 @@ export const userService = new UsuarioService();
 
 // ── Menú interactivo ──────────────────────────────────────────────────────────
 
-const ask = (rl: readline.Interface, pregunta: string): Promise<string> =>
-    new Promise(resolve => rl.question(pregunta, (r: string) => resolve(r.trim())));
+const ask = (rl: ReadlineInterface, pregunta: string): Promise<string> =>
+    rl.question(pregunta).then((r: string) => r.trim());
 
 function separador() { console.log('\n' + '─'.repeat(40)); }
 
@@ -219,7 +219,7 @@ function mostrarUsuario(u: Usuarios) {
     console.log(`  Activo   : ${u.isActivo ? 'Sí' : 'No'}`);
 }
 
-async function pedirUbicacion(rl: readline.Interface): Promise<Ubicacion> {
+async function pedirUbicacion(rl: ReadlineInterface): Promise<Ubicacion> {
     const direccion = await ask(rl, '  Dirección : ');
     const barrio    = await ask(rl, '  Barrio    : ');
     const ciudad    = await ask(rl, '  Ciudad    : ');
@@ -227,7 +227,7 @@ async function pedirUbicacion(rl: readline.Interface): Promise<Ubicacion> {
     return { direccion, barrio, ciudad, pais };
 }
 
-async function opcionCrear(rl: readline.Interface) {
+async function opcionCrear(rl: ReadlineInterface) {
     console.log('\n[ Crear usuario ]');
     try {
         const id        = await ask(rl, '  Id       : ');
@@ -250,14 +250,14 @@ async function opcionListar() {
     });
 }
 
-async function opcionBuscar(rl: readline.Interface) {
+async function opcionBuscar(rl: ReadlineInterface) {
     console.log('\n[ Buscar usuario por id ]');
     try {
         mostrarUsuario(userService.obtenerUsuarioPorId(await ask(rl, '  Id: ')));
     } catch (e) { console.error('  Error:', (e as Error).message); }
 }
 
-async function opcionActualizar(rl: readline.Interface) {
+async function opcionActualizar(rl: ReadlineInterface) {
     console.log('\n[ Actualizar usuario ]');
     try {
         const id       = await ask(rl, '  Id del usuario: ');
@@ -277,7 +277,7 @@ async function opcionActualizar(rl: readline.Interface) {
     } catch (e) { console.error('  Error:', (e as Error).message); }
 }
 
-async function opcionDesactivar(rl: readline.Interface) {
+async function opcionDesactivar(rl: ReadlineInterface) {
     console.log('\n[ Desactivar usuario ]');
     try {
         const u = userService.desactivarUsuario(await ask(rl, '  Id del usuario: '));
@@ -285,8 +285,8 @@ async function opcionDesactivar(rl: readline.Interface) {
     } catch (e) { console.error('  Error:', (e as Error).message); }
 }
 
-export async function iniciarMenu(rlExterno?: readline.Interface) {
-    const rl = rlExterno || readline.createInterface({ input: process.stdin, output: process.stdout });
+export async function iniciarMenu(rlExterno?: ReadlineInterface) {
+    const rl = rlExterno || createInterface({ input: process.stdin, output: process.stdout });
     
     while (true) {
         separador();
