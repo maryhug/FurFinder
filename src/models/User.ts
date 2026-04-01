@@ -1,4 +1,4 @@
-import { Ubicacion } from './shared.js';
+import { Ubicacion } from './Shared';
 
 export interface Usuarios {
     id: string;
