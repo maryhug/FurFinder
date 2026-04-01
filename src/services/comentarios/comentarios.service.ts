@@ -1,5 +1,5 @@
-import { BaseService } from "../common/base-service.js";
-import { Comentario } from "../models/Report.js";
+import { BaseService } from "../../common/base-service.js";
+import { Comentario } from "../../models/Report.js";
 
 export class ComentariosService extends BaseService<Comentario> {
     

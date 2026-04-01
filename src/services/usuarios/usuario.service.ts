@@ -1,9 +1,9 @@
-import { Usuarios } from '../models/User.js';
-import { BaseService } from '../common/base-service.js';
-import { ValidarEntidad, LogAuditoria } from '../decorators/validadores.js';
-import { capitalizar } from '../common/utils.js';
+import { Usuarios } from '../../models/User.js';
+import { BaseService } from '../../common/base-service.js';
+import { ValidarEntidad, LogAuditoria } from '../../decorators/validadores.js';
+import { capitalizar } from '../../common/utils.js';
 import { Validaciones, CrearUsuarioDTO, ActualizarUsuarioDTO } from './usuario.validators.js';
-import { DataUsuarios } from '../data/users.data.js';
+import { DataUsuarios } from '../../data/users.data.js';
 
 export namespace FurFinder {
     export namespace UsuariosNS {

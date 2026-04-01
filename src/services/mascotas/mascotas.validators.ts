@@ -1,5 +1,5 @@
-import { Mascotas, EspecieMascota, SexoMascota } from '../models/Pet.js';
-import { ErrorValidacion, validarEdadPositiva, validarLongitud } from '../common/utils.js';
+import { Mascotas, EspecieMascota, SexoMascota } from '../../models/Pet.js';
+import { ErrorValidacion, validarEdadPositiva, validarLongitud } from '../../common/utils.js';
 
 type UsuarioMinimo = { id: string; nombre: string; isActivo: boolean };
 export type UsuariosLookup = { obtenerPorId(id: string): UsuarioMinimo | null };

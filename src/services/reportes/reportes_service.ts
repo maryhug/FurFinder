@@ -1,11 +1,11 @@
-import {reportes} from '../data/data_reporte.js';
-import { Reportes } from '../models/Report.js';
-import { Ubicacion  } from '../models/shared.js';
-import { EstadoReporte } from '../models/shared.js';
-import { validarLongitud, validarUbicacion } from '../common/utils.js';
-import { ErrorValidacion } from '../common/utils.js';
-import { BaseService } from '../common/base-service.js';
-import { ValidarEntidad, LogAuditoria } from '../decorators/validadores.js';
+import {reportes} from '../../data/data_reporte.js';
+import { Reportes } from '../../models/Report.js';
+import { Ubicacion  } from '../../models/Shared.js';
+import { EstadoReporte } from '../../models/Shared.js';
+import { validarLongitud, validarUbicacion } from '../../common/utils.js';
+import { ErrorValidacion } from '../../common/utils.js';
+import { BaseService } from '../../common/base-service.js';
+import { ValidarEntidad, LogAuditoria } from '../../decorators/validadores.js';
 
  
 export namespace FurFinde.Reportes {

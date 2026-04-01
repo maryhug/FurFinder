@@ -1,12 +1,12 @@
-import { Usuarios } from '../models/User.js';
-import { Ubicacion } from '../models/shared.js';
+import { Usuarios } from '../../models/User.js';
+import { Ubicacion } from '../../models/Shared.js';
 import {
     validarEmail,
     validarSoloLetras,
     validarLongitud,
     validarUbicacion,
     verificarUnicidad,
-} from '../common/utils.js';
+} from '../../common/utils.js';
 
 // ── DTOs ──────────────────────────────────────────────────────────────────────
 

@@ -1,8 +1,8 @@
-import { BaseService } from "../common/base-service.js";
-import { DataMascotas } from "../data/pets.data.js";
-import { Match } from "../models/Match.js";
-import { Reportes } from "../models/Report.js";
-import { EstadoReporte } from "../models/Shared.js";
+import { BaseService } from "../../common/base-service.js";
+import { DataMascotas } from "../../data/pets.data.js";
+import { Match } from "../../models/Match.js";
+import { Reportes } from "../../models/Report.js";
+import { EstadoReporte } from "../../models/Shared.js";
 
 export class MatchesService extends BaseService<Match> {
     constructor() {

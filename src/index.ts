@@ -1,14 +1,14 @@
-import { iniciarMenu as iniciarMenuUsuarios } from './usuarios/usuario.menu.js';
-import { FurFinder } from './mascotas/mascotas.service.js';
-import { MascotasMenu } from './mascotas/mascotas.menu.js';
+import { iniciarMenu as iniciarMenuUsuarios } from './services/usuarios/usuario.menu.js';
+import { FurFinder } from './services/mascotas/mascotas.service.js';
+import { MascotasMenu } from './services/mascotas/mascotas.menu.js';
 import { menuPrincipal, OpcionMenu } from './common/main-menu.js';
 import { DataMascotas } from './data/pets.data.js';
 import { DataUsuarios } from './data/users.data.js';
 import { DataReportes } from './data/reports.data.js';
 
-import { MatchesService } from "./services/matches.service.js";
-import { ComentariosService } from "./services/comentarios.service.js";
-import { FurFinde } from "./reportes/reportes_service.js";
+import { MatchesService } from "./services/matches/matches.service.js";
+import { ComentariosService } from "./services/comentarios/comentarios.service.js";
+import { FurFinde } from "./services/reportes/reportes_service.js";
 
 type UsuarioMinimo = { id: string; nombre: string; isActivo: boolean };
 

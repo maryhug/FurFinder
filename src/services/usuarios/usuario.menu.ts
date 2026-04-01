@@ -1,6 +1,6 @@
 import { createInterface, Interface as ReadlineInterface } from 'node:readline/promises';
-import { Usuarios } from '../models/User.js';
-import { Ubicacion } from '../models/shared.js';
+import { Usuarios } from '../../models/User.js';
+import { Ubicacion } from '../../models/Shared.js';
 import { userService } from './usuario.service.js';
 import { ActualizarUsuarioDTO } from './usuario.validators.js';
 

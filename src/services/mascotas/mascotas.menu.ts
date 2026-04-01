@@ -1,9 +1,9 @@
 import { Interface } from 'node:readline/promises';
 
-import { Mascotas } from '../models/Pet.js';
+import { Mascotas } from '../../models/Pet.js';
 import { MascotasValidators } from './mascotas.validators.js';
 import { FurFinder } from './mascotas.service.js';
-import { titulo, seccion, opcion, errorMsg, okMsg, pregunta, divider, mutedMsg } from '../common/cli-style.js';
+import { titulo, seccion, opcion, errorMsg, okMsg, pregunta, divider, mutedMsg } from '../../common/cli-style.js';
 
 type MascotasService = FurFinder.MascotasNS.MascotasService;
 
