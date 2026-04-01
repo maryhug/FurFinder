@@ -1,4 +1,4 @@
-import { Comentario } from "../models/Report";
+import { Comentario } from '../models/Report.js';
 
 export const DataComentarios: Comentario[] = [
     {

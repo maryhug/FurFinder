@@ -1,21 +1,15 @@
-
-import { iniciarMenu } from './usuarios/usuario.service.js';
-
-iniciarMenu();
-
-// src/index.ts
-import { FurFinder } from './mascotas/mascotas.service';
-import { MascotasMenu } from './mascotas/mascotas.menu';
-import { menuPrincipal, OpcionMenu } from './common/main-menu';
-
-import { DataMascotas } from './data/pets.data';
-import { DataUsuarios } from './data/users.data';
+import { iniciarMenu as iniciarMenuUsuarios } from './usuarios/usuario.service.js';
+import { FurFinder } from './mascotas/mascotas.service.js';
+import { MascotasMenu } from './mascotas/mascotas.menu.js';
+import { menuPrincipal, OpcionMenu } from './common/main-menu.js';
+import { DataMascotas } from './data/pets.data.js';
+import { DataUsuarios } from './data/users.data.js';
 
 type UsuarioMinimo = { id: string; nombre: string; isActivo: boolean };
 
 function crearUsuariosLookup() {
     const usuariosIndex = new Map<string, UsuarioMinimo>(
-        DataUsuarios.map((u) => [u.id, u])
+        DataUsuarios.map((u: UsuarioMinimo) => [u.id, u])
     );
     return {
         obtenerPorId: (id: string) => usuariosIndex.get(id) ?? null,
@@ -41,8 +35,14 @@ async function main(): Promise<void> {
             titulo: 'Mascotas',
             run: (rl) => mascotasMenu.iniciar(rl),
         },
+        {
+            clave: '2',
+            titulo: 'Usuarios',
+            run: async (_rl) => {
+                await iniciarMenuUsuarios();
+            },
+        },
         // Ejemplos futuros:
-        // { clave: '2', titulo: 'Usuarios', run: () => usuariosMenu.iniciar() },
         // { clave: '3', titulo: 'Reportes', run: () => reportesMenu.iniciar() },
         // { clave: '4', titulo: 'Ranking', run: () => rankingMenu.iniciar() },
     ];
