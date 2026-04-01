@@ -1,4 +1,4 @@
-import { iniciarMenu as iniciarMenuUsuarios } from './usuarios/usuario.service.js';
+import { iniciarMenu as iniciarMenuUsuarios } from './usuarios/usuario.menu.js';
 import { FurFinder } from './mascotas/mascotas.service.js';
 import { MascotasMenu } from './mascotas/mascotas.menu.js';
 import { menuPrincipal, OpcionMenu } from './common/main-menu.js';
