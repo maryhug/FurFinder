@@ -1,5 +1,5 @@
 import { Reportes } from "../models/Report";
-import { EstadoReporte } from "../models/shared";
+import { EstadoReporte } from "../models/Shared";
 
 export const DataReportes: Reportes[] = [
     {
